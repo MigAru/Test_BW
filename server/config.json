@@ -1,0 +1,16 @@
+{
+"max_workers": 2,
+"port": ":8080",
+"nats": {
+    "servers": ["nats://localhost:4222"],
+    "username": "",
+    "password": ""
+},
+"postgres": {
+    "host": "localhost",
+    "user": "test_user",
+    "password": "test_password",
+    "db_name": "test_db",
+    "port": "5432"
+}
+}

@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"srv/db"
 	"srv/structs"
 	"time"
 
@@ -35,9 +36,13 @@ func CreateWorker(ctx chan os.Signal, sub chan *nats.Msg) {
 }
 
 func (a *app) Init() error {
-	if err := Subscribe("tasks", "transactions", a.subChan); err != nil {
-		return err
-	}
+	a.ctx = make(chan os.Signal, 1)
+    cfgApp, errors := ParseJsonConfig()
+    if len(errors) != 0 {
+        return fmt.Errorf("missing values in config %v", errors) 
+    }
+    a.cfg = cfgApp
+    db.ConnectDB(a.cfg.Postgres)
 	return nil
 }
 
@@ -46,7 +51,7 @@ func (a app) Start(router http.Handler) {
 		Addr:    a.cfg.Port,
 		Handler: router,
 	}
-
+    
 	for i := 1; i <= a.cfg.MaxWorkers; i++ {
 		fmt.Println(i)
 	}
@@ -63,9 +68,6 @@ func (a app) ShutDown() error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-
-	UnSubscribe("tasks", "transactions")
-
 	err := a.Server.Shutdown(ctx)
 	if err != nil {
 		return err

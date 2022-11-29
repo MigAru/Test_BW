@@ -11,6 +11,7 @@ import (
 func registerAPIServices(router *gin.RouterGroup) {
 	apiRoute := router.Group("/api")
 	routers.RegisterRouterPing(apiRoute)
+    routers.RegisterRouterUsers(apiRoute)
 }
 
 func main() {
