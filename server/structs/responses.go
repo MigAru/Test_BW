@@ -9,6 +9,7 @@ type TransactionResponse struct {
 	TypeOperation string
 }
 
+//MessageResponse - default or not success response
 type MessageResponse struct {
     Message string `json:"message"`
 }

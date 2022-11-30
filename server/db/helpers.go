@@ -10,6 +10,8 @@ import (
 
 var dbConn *gorm.DB
 
+
+//ConnectDB - Connection to db with config params
 func ConnectDB(cfg structs.ConfigDB) error {
 	dsn := fmt.Sprintf("postgres://%v:%v@%v:%v/%v", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.DBname)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
@@ -25,6 +27,7 @@ func ConnectDB(cfg structs.ConfigDB) error {
 	return nil
 }
 
+//NormalizeTransactions - normalizing slice transactions for response
 func NormalizeTransactions(transactions []Transaction) []structs.TransactionResponse {
 	res := []structs.TransactionResponse{}
 	for _, transaction := range transactions {
@@ -39,7 +42,7 @@ func NormalizeTransactions(transactions []Transaction) []structs.TransactionResp
 			UserID:        transaction.UserID,
 			ID:            transaction.ID,
 			Amount:        transaction.Amount,
-            CreatedAt:     transaction.CreatedAt,
+			CreatedAt:     transaction.CreatedAt,
 			TypeOperation: typeOperation,
 		})
 	}
@@ -55,9 +58,10 @@ func getBalance(userID uint) int {
 	return user.Balance
 }
 
+//ValidateBalace - validating current balance
 func ValidateBalace(userID uint, amount, typeOperation int) bool {
 	balance := getBalance(userID)
-	if typeOperation == 1 {
+	if typeOperation == ReducePrice {
 		if balance-amount < 0 {
 			return false
 		}

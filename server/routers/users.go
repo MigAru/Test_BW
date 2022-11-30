@@ -29,7 +29,9 @@ func RegisterRouterUsers(router *gin.RouterGroup) {
 func getUser(c *gin.Context) {
 	u64, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, structs.MessageResponse{
+            Message: err.Error(),
+        })
 		return
 	}
 	id := uint(u64)

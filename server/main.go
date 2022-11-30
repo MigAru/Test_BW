@@ -15,23 +15,23 @@ import (
 
 func registerAPIServices(router *gin.RouterGroup) {
 	apiRoute := router.Group("/api")
-    apiRoute.Use(middlewares.CheckJSONApplicationMiddleware())
+	apiRoute.Use(middlewares.CheckJSONApplicationMiddleware())
 	routers.RegisterRouterPing(apiRoute)
-    routers.RegisterRouterUsers(apiRoute)
-    routers.RegisterRouterTransactions(apiRoute)
+	routers.RegisterRouterUsers(apiRoute)
+	routers.RegisterRouterTransactions(apiRoute)
 }
 
 func main() {
 	App := services.CreateApp()
-	
-	if err := App.Init(); err != nil{
+
+	if err := App.Init(); err != nil {
 		fmt.Println(err)
 		return
 	}
-    docs.SwaggerInfo.BasePath = "/api/v1"	
+	docs.SwaggerInfo.BasePath = "/api/v1"
 	router := gin.Default()
 	router.Use(gin.Recovery())
-    router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	registerAPIServices(&router.RouterGroup)
 	go App.Start(router)
 
@@ -39,4 +39,4 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-} 
+}
