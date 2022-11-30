@@ -1,0 +1,190 @@
+definitions:
+  db.User:
+    properties:
+      balance:
+        type: integer
+      createdAt:
+        type: integer
+      id:
+        type: integer
+      username:
+        type: string
+    type: object
+  db.UserTransactions:
+    properties:
+      transactions:
+        items:
+          $ref: '#/definitions/structs.TransactionResponse'
+        type: array
+      user:
+        $ref: '#/definitions/db.User'
+    type: object
+  structs.CreateTransactionRequest:
+    properties:
+      amount:
+        type: integer
+      operation_type:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  structs.CreateUserRequest:
+    properties:
+      username:
+        type: string
+    type: object
+  structs.MessageResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  structs.TransactionResponse:
+    properties:
+      amount:
+        type: integer
+      createdAt:
+        type: integer
+      id:
+        type: integer
+      typeOperation:
+        type: string
+      userID:
+        type: integer
+    type: object
+info:
+  contact: {}
+paths:
+  /ping:
+    get:
+      consumes:
+      - application/json
+      description: this for check is alive service
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/structs.MessageResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/structs.MessageResponse'
+      summary: ping
+      tags:
+      - ping
+  /transactions:
+    post:
+      consumes:
+      - application/json
+      description: creating new transaction and return id string
+      parameters:
+      - description: Create Param
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/structs.CreateTransactionRequest'
+      produces:
+      - application/json
+      responses:
+        "203":
+          description: Created
+          schema:
+            $ref: '#/definitions/structs.MessageResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/structs.MessageResponse'
+      summary: transactions
+      tags:
+      - transactions
+  /transactions/{transaction_id}:
+    get:
+      consumes:
+      - application/json
+      description: gives user transactions and user data
+      parameters:
+      - description: Transaction ID
+        in: path
+        name: transaction_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/structs.TransactionResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/structs.MessageResponse'
+      summary: transactions
+      tags:
+      - transactions
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: get all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/db.User'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/structs.MessageResponse'
+      summary: users
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: creating new user
+      parameters:
+      - description: Create Param
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/structs.CreateUserRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: users
+      tags:
+      - users
+  /users/{user_id}:
+    get:
+      consumes:
+      - application/json
+      description: gives user transactions and user data
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.UserTransactions'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/structs.MessageResponse'
+      summary: users
+      tags:
+      - users
+swagger: "2.0"
