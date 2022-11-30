@@ -16,7 +16,8 @@ type Transaction struct {
 	ID            uint  `gorm:"primaryKey"`
 	UserID        uint  `gorm:"<-:create"`
 	Amount        int   `gorm:"<-:create"`
-	CreatedAt     int64 `gorm:"autoCreateTime"`
+    IsActive      int   `gorm:"default:0"`
+	CreatedAt     int64 `gorm:"autoCreateTime"` 
 	TypeOperation int
 }
 

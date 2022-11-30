@@ -32,17 +32,25 @@ func NormalizeTransactions(transactions []Transaction) []structs.TransactionResp
 	res := []structs.TransactionResponse{}
 	for _, transaction := range transactions {
 		typeOperation := ""
+        IsActive := false
 		switch transaction.TypeOperation {
 		case AddPrice:
 			typeOperation = "add"
 		case ReducePrice:
 			typeOperation = "reduce"
 		}
+        switch transaction.IsActive {
+        case ActiveTransaction:
+            IsActive = true
+        case NotActiveTransaction:
+            IsActive = false
+        }
 		res = append(res, structs.TransactionResponse{
 			UserID:        transaction.UserID,
 			ID:            transaction.ID,
 			Amount:        transaction.Amount,
 			CreatedAt:     transaction.CreatedAt,
+            IsActive:      IsActive,
 			TypeOperation: typeOperation,
 		})
 	}

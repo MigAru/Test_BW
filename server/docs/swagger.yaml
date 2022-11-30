@@ -46,6 +46,8 @@ definitions:
         type: integer
       id:
         type: integer
+      isActive:
+        type: boolean
       typeOperation:
         type: string
       userID:
@@ -108,6 +110,31 @@ paths:
       - description: Transaction ID
         in: path
         name: transaction_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/structs.TransactionResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/structs.MessageResponse'
+      summary: transactions
+      tags:
+      - transactions
+  /transactions/{user_id}/pop:
+    get:
+      consumes:
+      - application/json
+      description: gives active from queue transactions user
+      parameters:
+      - description: Transaction ID
+        in: path
+        name: user_id
         required: true
         type: integer
       produces:

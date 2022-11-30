@@ -2,6 +2,8 @@ package db
 
 import (
 	"errors"
+
+	"gorm.io/gorm"
 )
 
 func GetTransactionsUser(userID uint) ([]Transaction, error) {
@@ -21,14 +23,28 @@ func GetTransaction(id uint) (Transaction, error) {
 	return transaction, nil
 }
 
+func GetFirstActiveTransaction(user_id uint) (Transaction, error) {
+    transaction := Transaction{}
+    if err := dbConn.Where("user_id = ? AND is_active = 0", user_id).First(&transaction).Error; err != nil {
+        if !errors.Is(err, gorm.ErrRecordNotFound) {
+            return transaction, err
+        }
+        return transaction, errors.New("active transaction not found")
+    }
+    transaction.IsActive = NotActiveTransaction
+    dbConn.Save(&transaction)
+    transaction.IsActive = ActiveTransaction
+    return transaction, nil
+}
+
 func CreateTransaction(amount, typeOperation int, userID uint) (uint, error) {
 	user := User{}
-	task := Transaction{
+	transaction := Transaction{
 		UserID:        userID,
 		Amount:        amount,
 		TypeOperation: typeOperation,
 	}
-	tx := dbConn.Create(&task)
+	tx := dbConn.Create(&transaction)
 	if tx.Error != nil {
 		return 0, tx.Error
 	}
@@ -42,7 +58,7 @@ func CreateTransaction(amount, typeOperation int, userID uint) (uint, error) {
 		user.Balance -= amount
 	}
 	dbConn.Save(&user)
-	return task.ID, nil
+	return transaction.ID, nil
 }
 
 func GetUsers() ([]User, error) {

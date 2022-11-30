@@ -12,7 +12,39 @@ import (
 
 func RegisterRouterTransactions(router *gin.RouterGroup) {
 	router.GET("/v1/transactions/:id", getTransaction)
+	router.GET("/v1/transactions/:id/pop", popTransactionsQueue)
 	router.POST("/v1/transactions", createTransaction)
+}
+
+//	@BasePath	/api/v1
+//	@Summary	transactions
+//	@Schemes
+//	@Param			user_id	path	int	true	"Transaction ID"
+//	@Description	gives active from queue transactions user
+//	@Tags			transactions
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	structs.TransactionResponse
+//	@Failure		404	{object}	structs.MessageResponse
+//	@Router			/transactions/{user_id}/pop [get]
+func popTransactionsQueue(c *gin.Context) {
+	u64, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, structs.MessageResponse{
+			Message: err.Error(),
+		})
+		return
+	}
+	id := uint(u64)
+	transaction, err := db.GetFirstActiveTransaction(id)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, structs.MessageResponse{
+			Message: err.Error(),
+		})
+		return
+	}
+	transactionResp := db.NormalizeTransactions([]db.Transaction{transaction})
+	c.AbortWithStatusJSON(http.StatusOK, transactionResp[0])
 }
 
 //	@BasePath	/api/v1
@@ -30,8 +62,8 @@ func getTransaction(c *gin.Context) {
 	u64, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, structs.MessageResponse{
-            Message: err.Error(),
-        })
+			Message: err.Error(),
+		})
 		return
 	}
 	id := uint(u64)
@@ -91,7 +123,7 @@ func createTransaction(c *gin.Context) {
 	transactionID, err := db.CreateTransaction(req.Amount, operationType, req.UserID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, structs.MessageResponse{
-            Message: "breake request because operation not valid",
+			Message: "breake request because operation not valid",
 		})
 		return
 	}

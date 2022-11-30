@@ -6,6 +6,7 @@ type TransactionResponse struct {
 	UserID        uint
 	Amount        int
 	CreatedAt     int64
+    IsActive      bool
 	TypeOperation string
 }
 
