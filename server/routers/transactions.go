@@ -55,7 +55,7 @@ func getTransaction(c *gin.Context) {
 //	@Tags			transactions
 //	@Accept			json
 //	@Produce		json
-//	@Success		203	{object}	structs.MessageResponse	"Created"
+//	@Success		201	{object}	structs.MessageResponse
 //	@Failure		404	{object}	structs.MessageResponse
 //	@Router			/transactions [post]
 func createTransaction(c *gin.Context) {

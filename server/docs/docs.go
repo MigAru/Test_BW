@@ -70,7 +70,7 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "203": {
+                    "201": {
                         "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/structs.MessageResponse"

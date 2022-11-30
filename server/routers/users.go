@@ -79,7 +79,7 @@ func getUsers(c *gin.Context) {
 //	@Tags			users
 //	@Accept			json
 //	@Produce		json
-//	@Create			203	{object}	structs.MessageResponse
+//	@Create			201	{object}	structs.MessageResponse
 //	@Router			/users [post]
 func createUser(c *gin.Context) {
 	var user = structs.CreateUserRequest{}
