@@ -22,6 +22,6 @@ type Transaction struct {
 
 //UserTransactions - struct for response with normalizing slice transactions
 type UserTransactions struct {
-    User User
-    Transactions []structs.TransactionResponse
+	User User
+	Transactions []structs.TransactionResponse
 }
