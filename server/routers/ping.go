@@ -8,10 +8,9 @@ import (
 )
 
 //	@BasePath	/api/v1
-// PingExample godoc
-//	@Summary	ping example
+//	@Summary	ping
 //	@Schemes
-//	@Description	do ping
+//	@Description	this for check is alive service
 //	@Tags			ping
 //	@Accept			json
 //	@Produce		json

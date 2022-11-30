@@ -3,16 +3,19 @@ package main
 import (
 	"fmt"
 
+	docs "srv/docs"
+	"srv/middlewares"
 	"srv/routers"
 	"srv/services"
+
 	"github.com/gin-gonic/gin"
-    docs "srv/docs"
-    swaggerfiles "github.com/swaggo/files"
-    ginSwagger "github.com/swaggo/gin-swagger"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func registerAPIServices(router *gin.RouterGroup) {
 	apiRoute := router.Group("/api")
+    apiRoute.Use(middlewares.CheckJSONApplicationMiddleware())
 	routers.RegisterRouterPing(apiRoute)
     routers.RegisterRouterUsers(apiRoute)
     routers.RegisterRouterTransactions(apiRoute)

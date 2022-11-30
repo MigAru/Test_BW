@@ -15,6 +15,17 @@ func RegisterRouterTransactions(router *gin.RouterGroup) {
     router.POST("/v1/transactions", createTransaction)
 }
 
+//	@BasePath	/api/v1
+//	@Summary	transactions
+//	@Schemes
+//	@Param			transaction_id	path	int	true	"Transaction ID"
+//	@Description	gives user transactions and user data
+//	@Tags			transactions
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	structs.TransactionResponse
+//	@Failure		404	{object}	structs.MessageResponse
+//	@Router			/transactions/{transaction_id} [get]
 func getTransaction(c *gin.Context) {
     u64, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
@@ -34,7 +45,17 @@ func getTransaction(c *gin.Context) {
 
 
 }
-
+//	@BasePath	/api/v1
+//	@Summary	transactions
+//	@Schemes
+//	@Param			request	body	structs.CreateTransactionRequest	true	"Create Param"
+//	@Description	creating new transaction and return id string
+//	@Tags			transactions
+//	@Accept			json
+//	@Produce		json
+//	@Success		203	{object}	structs.MessageResponse	"Created"
+//	@Failure		404	{object}	structs.MessageResponse
+//	@Router			/transactions [post]
 func createTransaction(c *gin.Context) {
     req := structs.CreateTransactionRequest{}
     operationType := -1

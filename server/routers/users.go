@@ -15,6 +15,17 @@ func RegisterRouterUsers(router *gin.RouterGroup) {
 	router.POST("/v1/users", createUser)
 }
 
+//	@BasePath	/api/v1
+//	@Summary	users
+//	@Schemes
+//	@Param			user_id	path	int	true	"User ID"
+//	@Description	gives user transactions and user data
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	db.UserTransactions
+//	@Failure		404	{object}	structs.MessageResponse
+//	@Router			/users/{user_id} [get]
 func getUser(c *gin.Context) {
 	u64, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
@@ -30,13 +41,23 @@ func getUser(c *gin.Context) {
 		})
 		return
 	}
-	c.AbortWithStatusJSON(http.StatusOK, gin.H{
-		"user":         user,
-		"transactions": db.NormalizeTransactions(transactions),
+	c.AbortWithStatusJSON(http.StatusOK, db.UserTransactions{
+		User:         user,
+		Transactions: db.NormalizeTransactions(transactions),
 	})
 
 }
 
+//	@BasePath	/api/v1
+//	@Summary	users
+//	@Schemes
+//	@Description	get all users
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{array}		db.User
+//	@Failure		404	{object}	structs.MessageResponse
+//	@Router			/users [get]
 func getUsers(c *gin.Context) {
 	users, err := db.GetUsers()
 	if err != nil {
@@ -48,6 +69,16 @@ func getUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
+//	@BasePath	/api/v1
+//	@Summary	users
+//	@Schemes
+//	@Param			request	body	structs.CreateUserRequest	true	"Create Param"
+//	@Description	creating new user
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Create			203	{object}	structs.MessageResponse
+//	@Router			/users [post]
 func createUser(c *gin.Context) {
 	var user = structs.CreateUserRequest{}
 	if err := c.BindJSON(&user); err != nil {
