@@ -1,13 +1,8 @@
 {
-"max_workers": 2,
-"port": ":8080",
-"nats": {
-    "servers": ["nats://localhost:4222"],
-    "username": "",
-    "password": ""
-},
+"port": ":8000",
+"logger_type": 1,
 "postgres": {
-    "host": "localhost",
+    "host": "db",
     "user": "test_user",
     "password": "test_password",
     "db_name": "test_db",

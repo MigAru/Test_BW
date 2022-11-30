@@ -8,23 +8,59 @@ import (
 	"gorm.io/gorm"
 )
 
-
-
 var dbConn *gorm.DB
 
-
 func ConnectDB(cfg structs.ConfigDB) error {
-    dsn := fmt.Sprintf("postgres://%v:%v@%v:%v/%v",cfg.User,cfg.Password,cfg.Host,cfg.Port,cfg.DBname)
-    db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-    if err != nil {
-        return err
-    }
-    dbConn = db
-    if err := dbConn.AutoMigrate(&User{}); err != nil {
-        return err 
-    }
-    if err := dbConn.AutoMigrate(&Task{}); err != nil {
-        return err
-    }
-    return nil
+	dsn := fmt.Sprintf("postgres://%v:%v@%v:%v/%v", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.DBname)
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		return err
+	}
+	dbConn = db
+
+	//for tests
+	if err := dbConn.AutoMigrate(&User{}, &Transaction{}); err != nil {
+		return err
+	}
+	return nil
+}
+
+func NormalizeTransactions(transactions []Transaction) []structs.TransactionResponse {
+	res := []structs.TransactionResponse{}
+	for _, transaction := range transactions {
+		typeOperation := ""
+		switch transaction.TypeOperation {
+		case AddPrice:
+			typeOperation = "add"
+		case ReducePrice:
+			typeOperation = "reduce"
+		}
+		res = append(res, structs.TransactionResponse{
+			UserID:        transaction.UserID,
+			ID:            transaction.ID,
+			Amount:        transaction.Amount,
+            CreatedAt:     transaction.CreatedAt,
+			TypeOperation: typeOperation,
+		})
+	}
+	return res
+}
+
+func getBalance(userID uint) int {
+	user := User{}
+	dbConn.First(&user)
+	if user.ID == 0 {
+		return -1
+	}
+	return user.Balance
+}
+
+func ValidateBalace(userID uint, amount, typeOperation int) bool {
+	balance := getBalance(userID)
+	if typeOperation == 1 {
+		if balance-amount < 0 {
+			return false
+		}
+	}
+	return true
 }

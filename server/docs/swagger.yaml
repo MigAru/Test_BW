@@ -1,0 +1,29 @@
+definitions:
+  structs.MessageResponse:
+    properties:
+      message:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /ping:
+    get:
+      consumes:
+      - application/json
+      description: do ping
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/structs.MessageResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/structs.MessageResponse'
+      summary: ping example
+      tags:
+      - ping
+swagger: "2.0"
