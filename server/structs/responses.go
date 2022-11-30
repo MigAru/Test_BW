@@ -2,7 +2,7 @@ package structs
 
 
 type TransactionResponse struct {
-    ID            uint
+	ID            uint
 	UserID        uint
 	Amount        int
 	CreatedAt     int64
@@ -11,5 +11,5 @@ type TransactionResponse struct {
 
 //MessageResponse - default or not success response
 type MessageResponse struct {
-    Message string `json:"message"`
+	Message string `json:"message"`
 }
